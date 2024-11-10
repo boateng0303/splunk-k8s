@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splunk
+  labels:
+    app: splunk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: splunk
+  template:
+    metadata:
+      labels:
+        app: splunk
+    spec:
+      containers:
+        - name: splunk
+          image: splunk/splunk:latest
+          ports:
+            - containerPort: 8000
+          env:
+          - name: SPLUNK_START_ARGS
+            valueFrom:
+              configMapKeyRef:
+                name: splunk-configmap
+                key: license
+          
+          - name: SPLUNK_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: splunk-secret
+                key: password
